@@ -1,5 +1,30 @@
 // Configuration - Update these with your Google Sheets details
 SHEET_ID = '1nFMiWEAt6TGlgiNtv3FC7vptnnx1KHe_KOAit-h38wc'
+
+// Make CANDIDATE_PROFILES global
+window.CANDIDATE_PROFILES = {
+    'Ganesh Paudyal': {
+        bio: 'Cohort 2021',
+        avatar: 'GP',
+        imageUrl: './images/ganesh.jpg'
+    },
+    'Rusha Adhikari': {
+        bio: 'Cohort 2015',
+        avatar: 'RA',
+        imageUrl: './images/rusha.png'
+    },
+    'Shiv Kandel': {
+        bio: 'Cohort 2014',
+        avatar: 'SK',
+        imageUrl: './images/shiv.jpeg'
+    },
+    'Suhel Ratna Shakya': {
+        bio: 'Cohort 2018',
+        avatar: 'SRS',
+        imageUrl: './images/suhel.jpg'
+    }
+};
+
 const CONFIG = {
     // Replace with your Google Sheets CSV export URL
     // Format: https://docs.google.com/spreadsheets/d/SHEET_ID/export?format=csv&gid=0
@@ -17,26 +42,22 @@ const CANDIDATE_PROFILES = {
     'Ganesh Paudyal': {
         bio: 'Cohort 2021',
         avatar: 'GP',
-        imageUrl: './images/ganesh.jpg', // Add image URLs
-        googleDocUrl: 'https://docs.google.com/document/d/1-JPcM0SD8UmbYjKhgNmT4rz3tenqaS2-17wQyb_DM4M/preview?tab=t.0'
+        imageUrl: './images/ganesh.jpg'
     },
     'Rusha Adhikari': {
         bio: 'Cohort 2015',
         avatar: 'RA',
-        imageUrl: './images/rusha.png',
-        googleDocUrl: 'https://docs.google.com/document/d/1-JPcM0SD8UmbYjKhgNmT4rz3tenqaS2-17wQyb_DM4M/preview?tab=t.pvml0b8d4oaf'
+        imageUrl: './images/rusha.png'
     },
     'Shiv Kandel': {
         bio: 'Cohort 2014',
         avatar: 'SK',
-        imageUrl: './images/shiv.jpeg',
-        googleDocUrl: 'https://docs.google.com/document/d/1-JPcM0SD8UmbYjKhgNmT4rz3tenqaS2-17wQyb_DM4M/preview?tab=t.ktucxv5cu6rt'
+        imageUrl: './images/shiv.jpeg'
     },
     'Suhel Ratna Shakya': {
         bio: 'Cohort 2018',
         avatar: 'SRS',
-        imageUrl: './images/suhel.jpg',
-        googleDocUrl: 'https://docs.google.com/document/d/1-JPcM0SD8UmbYjKhgNmT4rz3tenqaS2-17wQyb_DM4M/preview?tab=t.6ko4gfwkwc2'
+        imageUrl: './images/suhel.jpg'
     }
 };
 
@@ -180,9 +201,9 @@ function loadCandidateProfiles() {
             </div>
             <h4>${name}</h4>
             <p>${profile.bio}</p>
-            <div class="profile-link" onclick="window.open('${profile.googleDocUrl}', '_blank')">
+            <a href="profile.html?candidate=${encodeURIComponent(name)}" class="profile-link">
                 View Full Profile
-            </div>
+            </a>
         </div>
     `).join('');
 }
