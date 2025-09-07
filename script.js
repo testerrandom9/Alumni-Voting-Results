@@ -221,6 +221,17 @@ document.addEventListener('visibilitychange', async () => {
     }
 });
 
+// Add click handler for results tab link
+document.addEventListener('click', async function(e) {
+    // Check if the clicked element is a link to results.html
+    if (e.target.tagName === 'A' && e.target.href && e.target.href.includes('results.html')) {
+        // Small delay to ensure DOM is ready
+        setTimeout(async () => {
+            await loadPollData();
+        }, 100);
+    }
+});
+
 // Keep the card animation code if you want
 document.addEventListener('mousemove', function(e) {
     const cards = document.querySelectorAll('.candidate-card');
