@@ -181,8 +181,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const currentPage = window.location.pathname;
     
     if (currentPage.includes('results.html')) {
-        // Results page
+        // Immediately load results when on results page
         loadPollData();
+        // Set up auto-refresh
         setInterval(loadPollData, CONFIG.REFRESH_INTERVAL);
     } else {
         // Home/Candidates page
