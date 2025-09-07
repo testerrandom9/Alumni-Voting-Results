@@ -217,7 +217,13 @@ function triggerRefresh() {
 document.addEventListener('DOMContentLoaded', function() {
     const currentPage = window.location.pathname;
     
-    if (currentPage.includes('results')) {
+    // Check multiple possible ways the results page might be identified
+    if (currentPage.includes('results.html') || 
+        currentPage.includes('results') || 
+        window.location.href.includes('results.html') ||
+        document.querySelector('.nav-tabs a.active[href*="results"]')) {
+        
+        console.log('Results page detected, loading data...');
         // Click the refresh button after a small delay to ensure it's loaded
         setTimeout(triggerRefresh, 100);
         
@@ -237,14 +243,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Add event listeners for page load and visibility changes
 window.addEventListener('load', async () => {
-    if (window.location.pathname.includes('results.html')) {
+    // Check multiple possible ways the results page might be identified
+    if (window.location.pathname.includes('results.html') || 
+        window.location.pathname.includes('results') || 
+        window.location.href.includes('results.html') ||
+        document.querySelector('.nav-tabs a.active[href*="results"]')) {
+        
+        console.log('Results page detected on load, loading data...');
         await loadPollData();
     }
 });
 
 // Handle page visibility changes (e.g., when user switches back to the tab)
 document.addEventListener('visibilitychange', async () => {
-    if (document.visibilityState === 'visible' && window.location.pathname.includes('results.html')) {
+    const isResultsPage = window.location.pathname.includes('results.html') || 
+                         window.location.pathname.includes('results') || 
+                         window.location.href.includes('results.html') ||
+                         document.querySelector('.nav-tabs a.active[href*="results"]');
+                         
+    if (document.visibilityState === 'visible' && isResultsPage) {
+        console.log('Results page visible again, reloading data...');
         await loadPollData();
     }
 });
@@ -279,4 +297,3 @@ document.addEventListener('mousemove', function(e) {
         }
     });
 });
-
