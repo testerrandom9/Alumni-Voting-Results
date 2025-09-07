@@ -1,12 +1,12 @@
 // Configuration - Update these with your Google Sheets details
-SHEET_ID = '19CEMvEzzk-hqkjOCmMqZTpPc0pKCHJlPXLZr5zhCwn4'
+SHEET_ID = '1nFMiWEAt6TGlgiNtv3FC7vptnnx1KHe_KOAit-h38wc'
 const CONFIG = {
     // Replace with your Google Sheets CSV export URL
     // Format: https://docs.google.com/spreadsheets/d/SHEET_ID/export?format=csv&gid=0
-    GOOGLE_SHEETS_CSV_URL: 'https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/export?format=csv&gid=0',
+    GOOGLE_SHEETS_CSV_URL: 'https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/export?format=csv&gid=1814483640',
     
     // Update with your voting platform URL
-    VOTE_URL: 'https://your-voting-platform.com',
+    VOTE_URL: 'https://forms.gle/bLXrqLFJTGvScB9X9',
     
     // Refresh interval in milliseconds (30 seconds)
     REFRESH_INTERVAL: 30000
@@ -14,29 +14,29 @@ const CONFIG = {
 
 // Sample candidate profiles (you can customize these)
 const CANDIDATE_PROFILES = {
-    'Tim': {
-        bio: 'Experienced leader with 15 years in public service',
-        avatar: 'JS',
-        imageUrl: 'https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', // Add image URLs
-        googleDocUrl: 'https://docs.google.com/document/d/1q449Hx8h0PCPfGUkyZ3m_SoTKN5rVXf9aX58UpyWbpw/edit?tab=t.0'
+    'Ganesh Paudyal': {
+        bio: 'Cohort 2021',
+        avatar: 'GP',
+        imageUrl: './images/ganesh.jpg', // Add image URLs
+        googleDocUrl: 'https://docs.google.com/document/d/1-JPcM0SD8UmbYjKhgNmT4rz3tenqaS2-17wQyb_DM4M/preview?tab=t.0'
     },
-    'Tom': {
-        bio: 'Community organizer focused on education reform',
-        avatar: 'SJ',
-        imageUrl: 'https://plus.unsplash.com/premium_photo-1690407617542-2f210cf20d7e?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        googleDocUrl: 'https://docs.google.com/document/d/YOUR_DOC_ID_FOR_SARAH'
+    'Rusha Adhikari': {
+        bio: 'Cohort 2015',
+        avatar: 'RA',
+        imageUrl: './images/rusha.png',
+        googleDocUrl: 'https://docs.google.com/document/d/1-JPcM0SD8UmbYjKhgNmT4rz3tenqaS2-17wQyb_DM4M/preview?tab=t.pvml0b8d4oaf'
     },
-    'John': {
-        bio: 'Business owner advocating for economic growth',
-        avatar: 'MB',
-        imageUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        googleDocUrl: 'https://docs.google.com/document/d/YOUR_DOC_ID_FOR_MIKE'
+    'Shiv Kandel': {
+        bio: 'Cohort 2014',
+        avatar: 'SK',
+        imageUrl: './images/shiv.jpeg',
+        googleDocUrl: 'https://docs.google.com/document/d/1-JPcM0SD8UmbYjKhgNmT4rz3tenqaS2-17wQyb_DM4M/preview?tab=t.ktucxv5cu6rt'
     },
-    'Jane': {
-        bio: 'Environmental activist and sustainability expert',
-        avatar: 'LD',
-        imageUrl: 'https://plus.unsplash.com/premium_photo-1689977807477-a579eda91fa2?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        googleDocUrl: 'https://docs.google.com/document/d/YOUR_DOC_ID_FOR_LISA'
+    'Suhel Ratna Shakya': {
+        bio: 'Cohort 2018',
+        avatar: 'SRS',
+        imageUrl: './images/suhel.jpg',
+        googleDocUrl: 'https://docs.google.com/document/d/1-JPcM0SD8UmbYjKhgNmT4rz3tenqaS2-17wQyb_DM4M/preview?tab=t.6ko4gfwkwc2'
     }
 };
 
@@ -103,10 +103,10 @@ async function loadPollData() {
         
         // Show sample data for demonstration
         pollData = [
-            { candidate: 'John Smith', votes: 245 },
-            { candidate: 'Sarah Johnson', votes: 198 },
-            { candidate: 'Mike Brown', votes: 156 },
-            { candidate: 'Lisa Davis', votes: 123 }
+            { candidate: 'Ganesh Paudyal', votes: 0 },
+            { candidate: 'Rusha Adhikari', votes: 0 },
+            { candidate: 'Shiv Kandel', votes: 0 },
+            { candidate: 'Suhel Ratna Shakya', votes: 0 }
         ];
         totalVotes = pollData.reduce((sum, item) => sum + item.votes, 0);
         
@@ -180,7 +180,7 @@ function loadCandidateProfiles() {
             </div>
             <h4>${name}</h4>
             <p>${profile.bio}</p>
-            <div class="profile-link" onclick="window.open('${profile.googleDocUrl}', '_blank')">
+            <div class="profile-link" onclick="window.open('${profile.googleDocUrl}', '_blank')" style="cursor: pointer">
                 Click to view full profile →
             </div>
         </div>
