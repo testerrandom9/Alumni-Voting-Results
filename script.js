@@ -119,86 +119,81 @@ function getAvatarHTML(profile, candidate) {
 }
 
 function displayResults() {
+    if (!document.getElementById('results')) return;
+
     // Update total votes
     document.getElementById('total-count').textContent = totalVotes.toLocaleString();
 
     // Display candidate results
     const resultsContainer = document.getElementById('candidates-results');
-    resultsContainer.innerHTML = '';
-
-    pollData.forEach((candidate, index) => {
+    if (!resultsContainer) return;
+    
+    resultsContainer.innerHTML = pollData.map(candidate => {
         const percentage = totalVotes > 0 ? (candidate.votes / totalVotes * 100).toFixed(1) : 0;
         const profile = CANDIDATE_PROFILES[candidate.candidate];
         const avatarContent = getAvatarHTML(profile, candidate.candidate);
 
-        const candidateCard = document.createElement('div');
-        candidateCard.className = 'candidate-card';
-        candidateCard.innerHTML = `
-            <div class="candidate-header">
-                <div class="candidate-avatar">${avatarContent}</div>
-                <div class="candidate-info">
-                    <h3>${candidate.candidate}</h3>
-                    <div class="candidate-votes">${candidate.votes.toLocaleString()} votes</div>
+        return `
+            <div class="candidate-card">
+                <div class="candidate-header">
+                    <div class="candidate-avatar">${avatarContent}</div>
+                    <div class="candidate-info">
+                        <h3>${candidate.candidate}</h3>
+                        <div class="candidate-votes">${candidate.votes.toLocaleString()} votes</div>
+                    </div>
                 </div>
+                <div class="vote-bar">
+                    <div class="vote-fill" style="width: ${percentage}%"></div>
+                </div>
+                <div class="vote-percentage">${percentage}%</div>
             </div>
-            <div class="vote-bar">
-                <div class="vote-fill" style="width: ${percentage}%"></div>
-            </div>
-            <div class="vote-percentage">${percentage}%</div>
         `;
+    }).join('');
 
-        resultsContainer.appendChild(candidateCard);
-    });
-
-    // Display candidate profiles
-    displayCandidateProfiles();
+    // Show results container
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('results').style.display = 'block';
 }
 
-function displayCandidateProfiles() {
+function loadCandidateProfiles() {
     const profilesContainer = document.getElementById('candidate-profiles');
-    profilesContainer.innerHTML = '';
+    if (!profilesContainer) return;
 
-    pollData.forEach(candidate => {
-        const profile = CANDIDATE_PROFILES[candidate.candidate] || {
-            bio: 'Dedicated candidate committed to positive change',
-            avatar: candidate.candidate.split(' ').map(n => n[0]).join(''),
-            googleDocUrl: '#'
-        };
-        const avatarContent = getAvatarHTML(profile, candidate.candidate);
-
-        const profileCard = document.createElement('div');
-        profileCard.className = 'candidate-profile';
-        profileCard.style.cursor = 'pointer';
-        profileCard.onclick = function() {
-            const url = profile.googleDocUrl;
-            if (url === '#' || url.includes('YOUR_GOOGLE_DOC_ID')) {
-                alert('Google Doc URL not configured for this candidate yet.');
-            } else {
-                window.open(url, '_blank');
-            }
-        };
-
-        profileCard.innerHTML = `
-            <div class="candidate-avatar">${avatarContent}</div>
-            <h4>${candidate.candidate}</h4>
-            <p>${profile.bio.length > 100 ? profile.bio.substring(0, 100) + '...' : profile.bio}</p>
-            <div style="margin-top: 15px; color: #667eea; font-weight: 600;">
+    profilesContainer.innerHTML = Object.entries(CANDIDATE_PROFILES).map(([name, profile]) => `
+        <div class="candidate-profile">
+            <div class="candidate-avatar">
+                ${profile.imageUrl ? 
+                    `<img src="${profile.imageUrl}" alt="${name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` :
+                    profile.avatar || name[0]
+                }
+            </div>
+            <h4>${name}</h4>
+            <p>${profile.bio}</p>
+            <div class="profile-link" onclick="window.open('${profile.googleDocUrl}', '_blank')">
                 Click to view full profile →
             </div>
-        `;
-
-        profilesContainer.appendChild(profileCard);
-    });
+        </div>
+    `).join('');
 }
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
-    loadPollData();
-    setInterval(loadPollData, CONFIG.REFRESH_INTERVAL);
+    const currentPage = window.location.pathname;
     
-    document.querySelector('.vote-button').onclick = function() {
-        window.open(CONFIG.VOTE_URL, '_blank');
-    };
+    if (currentPage.includes('results.html')) {
+        // Results page
+        loadPollData();
+        setInterval(loadPollData, CONFIG.REFRESH_INTERVAL);
+    } else {
+        // Home/Candidates page
+        loadCandidateProfiles();
+    }
+
+    // Set up vote button if it exists
+    const voteButton = document.querySelector('.vote-button');
+    if (voteButton) {
+        voteButton.onclick = () => window.open(CONFIG.VOTE_URL, '_blank');
+    }
 });
 
 // Keep the card animation code if you want
