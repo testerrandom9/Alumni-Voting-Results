@@ -177,14 +177,24 @@ function loadCandidateProfiles() {
 }
 
 // Initialize the page
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     const currentPage = window.location.pathname;
     
     if (currentPage.includes('results.html')) {
-        // Immediately load results when on results page
-        loadPollData();
-        // Set up auto-refresh
-        setInterval(loadPollData, CONFIG.REFRESH_INTERVAL);
+        try {
+            // Immediately load results when on results page
+            await loadPollData();
+            // Set up auto-refresh with proper async handling
+            setInterval(async () => {
+                try {
+                    await loadPollData();
+                } catch (error) {
+                    console.error('Error in auto-refresh:', error);
+                }
+            }, CONFIG.REFRESH_INTERVAL);
+        } catch (error) {
+            console.error('Error in initial load:', error);
+        }
     } else {
         // Home/Candidates page
         loadCandidateProfiles();
