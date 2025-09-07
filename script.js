@@ -180,8 +180,8 @@ function loadCandidateProfiles() {
             </div>
             <h4>${name}</h4>
             <p>${profile.bio}</p>
-            <div class="profile-link" onclick="window.open('${profile.googleDocUrl}', '_blank')" style="cursor: pointer">
-                Click to view full profile →
+            <div class="profile-link" onclick="window.open('${profile.googleDocUrl}', '_blank')">
+                View Full Profile
             </div>
         </div>
     `).join('');
