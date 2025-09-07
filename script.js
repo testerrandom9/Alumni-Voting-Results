@@ -217,7 +217,7 @@ function triggerRefresh() {
 document.addEventListener('DOMContentLoaded', function() {
     const currentPage = window.location.pathname;
     
-    if (currentPage.includes('results.html')) {
+    if (currentPage.includes('results')) {
         // Click the refresh button after a small delay to ensure it's loaded
         setTimeout(triggerRefresh, 100);
         
@@ -279,3 +279,4 @@ document.addEventListener('mousemove', function(e) {
         }
     });
 });
+
