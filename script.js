@@ -207,6 +207,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 });
 
+// Add event listeners for page load and visibility changes
+window.addEventListener('load', async () => {
+    if (window.location.pathname.includes('results.html')) {
+        await loadPollData();
+    }
+});
+
+// Handle page visibility changes (e.g., when user switches back to the tab)
+document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState === 'visible' && window.location.pathname.includes('results.html')) {
+        await loadPollData();
+    }
+});
+
 // Keep the card animation code if you want
 document.addEventListener('mousemove', function(e) {
     const cards = document.querySelectorAll('.candidate-card');
