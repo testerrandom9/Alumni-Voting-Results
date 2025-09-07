@@ -44,13 +44,24 @@ let pollData = [];
 let totalVotes = 0;
 
 async function loadPollData() {
-    const loading = document.getElementById('loading');
-    const results = document.getElementById('results');
-    const error = document.getElementById('error');
-
-    loading.style.display = 'block';
-    results.style.display = 'none';
-    error.style.display = 'none';
+    // Wait for elements to be available
+    let retries = 0;
+    while (retries < 50) {
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const error = document.getElementById('error');
+        
+        if (loading && results && error) {
+            loading.style.display = 'block';
+            results.style.display = 'none';
+            error.style.display = 'none';
+            break;
+        }
+        
+        // Wait 100ms and try again
+        await new Promise(resolve => setTimeout(resolve, 100));
+        retries++;
+    }
 
     try {
         // Check if CSV URL is configured
@@ -176,25 +187,35 @@ function loadCandidateProfiles() {
     `).join('');
 }
 
-// Initialize the page
+// Function to initialize the results page
+async function initializeResultsPage() {
+    try {
+        // Immediately load results
+        await loadPollData();
+        // Set up auto-refresh
+        setInterval(async () => {
+            try {
+                await loadPollData();
+            } catch (error) {
+                console.error('Error in auto-refresh:', error);
+            }
+        }, CONFIG.REFRESH_INTERVAL);
+    } catch (error) {
+        console.error('Error in initial load:', error);
+    }
+}
+
+// Initialize as early as possible
+if (window.location.pathname.includes('results.html')) {
+    initializeResultsPage();
+}
+
+// Also initialize on DOMContentLoaded as a fallback
 document.addEventListener('DOMContentLoaded', async function() {
     const currentPage = window.location.pathname;
     
     if (currentPage.includes('results.html')) {
-        try {
-            // Immediately load results when on results page
-            await loadPollData();
-            // Set up auto-refresh with proper async handling
-            setInterval(async () => {
-                try {
-                    await loadPollData();
-                } catch (error) {
-                    console.error('Error in auto-refresh:', error);
-                }
-            }, CONFIG.REFRESH_INTERVAL);
-        } catch (error) {
-            console.error('Error in initial load:', error);
-        }
+        await initializeResultsPage();
     } else {
         // Home/Candidates page
         loadCandidateProfiles();
@@ -223,12 +244,20 @@ document.addEventListener('visibilitychange', async () => {
 
 // Add click handler for results tab link
 document.addEventListener('click', async function(e) {
-    // Check if the clicked element is a link to results.html
-    if (e.target.tagName === 'A' && e.target.href && e.target.href.includes('results.html')) {
-        // Small delay to ensure DOM is ready
+    // Find closest anchor tag (in case user clicked on a child element)
+    const link = e.target.closest('a');
+    if (link && link.href && link.href.includes('results.html')) {
+        e.preventDefault(); // Prevent default navigation
+        // Navigate programmatically
+        window.location.href = link.href;
+        // Load data after a small delay to ensure page is ready
         setTimeout(async () => {
-            await loadPollData();
-        }, 100);
+            try {
+                await loadPollData();
+            } catch (error) {
+                console.error('Error loading poll data:', error);
+            }
+        }, 500);
     }
 });
 
