@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Profile</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Add marked.js for markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="profile-page">
+            <div class="profile-header">
+                <a href="index.html" class="home-button">Home</a>
+                <img id="profileImage" class="profile-image" alt="Candidate Profile">
+                <h1 id="profileName"></h1>
+                <p id="profileBio" class="profile-bio"></p>
+            </div>
+            <div id="profileContent" class="profile-content">
+                <!-- Markdown content will be loaded here -->
+            </div>
+        </div>
+    </div>
+    <script>
+        // Function to get URL parameters
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Function to load and render markdown content
+        async function loadProfile() {
+            const candidateName = getQueryParam('candidate');
+            if (!candidateName) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Get candidate info from the main script
+            const candidateInfo = window.CANDIDATE_PROFILES?.[candidateName];
+            if (!candidateInfo) {
+                console.error('Candidate not found:', candidateName);
+                document.getElementById('profileContent').innerHTML = `
+                    <div class="error-message">
+                        <h3>Profile Not Found</h3>
+                        <p>Sorry, we couldn't find the profile for ${candidateName}.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Update page title and header
+            document.title = `${candidateName} - Profile`;
+            document.getElementById('profileName').textContent = candidateName;
+            document.getElementById('profileBio').textContent = candidateInfo.bio;
+            
+            // Set profile image
+            const profileImage = document.getElementById('profileImage');
+            profileImage.src = candidateInfo.imageUrl;
+            profileImage.alt = candidateName;
+
+            try {
+                console.log('Loading markdown for:', candidateName);
+            // Generate filename from candidate name
+                const filename = candidateName.split(' ')[0].toLowerCase();
+                const mdFile = `profiles/${filename}.md`;
+                console.log('Attempting to load:', mdFile);
+                const response = await fetch(mdFile);
+                if (!response.ok) throw new Error(`Failed to load profile content from ${mdFile}`);
+                
+                const markdown = await response.text();
+                console.log('Markdown loaded successfully');
+                // Parse markdown and insert into profile content
+                document.getElementById('profileContent').innerHTML = marked.parse(markdown);
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                document.getElementById('profileContent').innerHTML = `
+                    <div class="error-message">
+                        <h3>Error Loading Profile</h3>
+                        <p>Sorry, we couldn't load the profile content. Please try again later.</p>
+                        <pre>${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+
+        // Load the profile when the page loads
+        document.addEventListener('DOMContentLoaded', loadProfile);
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
