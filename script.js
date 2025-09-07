@@ -205,17 +205,24 @@ async function initializeResultsPage() {
     }
 }
 
-// Initialize as early as possible
-if (window.location.pathname.includes('results.html')) {
-    initializeResultsPage();
+// Function to trigger refresh button click
+function triggerRefresh() {
+    const refreshBtn = document.querySelector('.refresh-btn');
+    if (refreshBtn) {
+        refreshBtn.click();
+    }
 }
 
-// Also initialize on DOMContentLoaded as a fallback
-document.addEventListener('DOMContentLoaded', async function() {
+// Initialize the page
+document.addEventListener('DOMContentLoaded', function() {
     const currentPage = window.location.pathname;
     
     if (currentPage.includes('results.html')) {
-        await initializeResultsPage();
+        // Click the refresh button after a small delay to ensure it's loaded
+        setTimeout(triggerRefresh, 100);
+        
+        // Set up auto-refresh
+        setInterval(triggerRefresh, CONFIG.REFRESH_INTERVAL);
     } else {
         // Home/Candidates page
         loadCandidateProfiles();
@@ -243,21 +250,12 @@ document.addEventListener('visibilitychange', async () => {
 });
 
 // Add click handler for results tab link
-document.addEventListener('click', async function(e) {
+document.addEventListener('click', function(e) {
     // Find closest anchor tag (in case user clicked on a child element)
     const link = e.target.closest('a');
     if (link && link.href && link.href.includes('results.html')) {
-        e.preventDefault(); // Prevent default navigation
-        // Navigate programmatically
-        window.location.href = link.href;
-        // Load data after a small delay to ensure page is ready
-        setTimeout(async () => {
-            try {
-                await loadPollData();
-            } catch (error) {
-                console.error('Error loading poll data:', error);
-            }
-        }, 500);
+        // Let the default navigation happen
+        // The DOMContentLoaded event will handle the refresh
     }
 });
 
