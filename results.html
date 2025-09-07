@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Results</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="nav-tabs">
+            <a href="index.html">Candidates</a>
+            <a href="results.html" class="active">Results</a>
+        </nav>
+
+        <div class="header">
+            <h1>🗳️ Voting Results</h1>
+            <!-- <p>Live poll results updated in real-time</p> -->
+            <button class="refresh-btn" onclick="loadPollData()">
+                🔄 Refresh Results
+            </button>
+        </div>
+
+        <div class="results-container">
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                Loading poll results...
+            </div>
+            
+            <div id="results" style="display: none;">
+                <div id="total-votes" class="total-votes">
+                    <h2 id="total-count">0</h2>
+                    <p>Total Votes Cast</p>
+                </div>
+                
+                <div id="candidates-results"></div>
+            </div>
+
+            <div id="error" class="error-message" style="display: none;">
+                <h3>Unable to load poll results</h3>
+                <p>Please check your Google Sheets configuration.</p>
+                <button class="refresh-button" onclick="loadPollData()">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
